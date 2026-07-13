@@ -352,7 +352,7 @@ rosrun turtlesim turtlesim_node
 rosrun turtlesim turtle_teleop_key
 ```
 
-방향키를 이용하여 `turtlesim_node`의 거북이를 움빅여보자.
+방향키를 이용하여 `turtlesim_node`의 거북이를 이동시켜보자.
 
 
 
