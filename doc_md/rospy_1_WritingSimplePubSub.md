@@ -63,7 +63,7 @@ catkin_package()
 
 
 
-### 3. `example_pub.py`작성
+### 3. 토픽 퍼블리셔 노드`example_pub.py`작성
 
 
 
@@ -210,7 +210,7 @@ rostopic list
 
 토픽 내용 확인을 위해 `rostopic echo /hello`명령을 실행한다.
 
-```
+```bash
 rostopic echo /hello 
 data: "hello world 1783995803.3572793"
 ---
@@ -225,6 +225,131 @@ data: "hello world 1783995803.7576108"
 data: "hello world 1783995803.857637"
 ---
 data: "hello world 1783995803.9576106"
+```
+
+
+
+### 6. 토픽 서브스크라이버 노드`example_pub.py`작성
+
+`~/catkin_ws/src/rospy_tutorial/src`로 작업경로 변경
+
+```bash
+~/catkin_ws/src/rospy_tutorial/src
+```
+
+크기가 0인 `example_sub.py`파일 생성
+
+```bash
+touch example_sub.py
+```
+
+`example_sub.py`파일에 실행속성 부여
+
+```bash
+chmod +x example_sub.py
+```
+
+`example_sub.py`파일에 실행속성 부여 여부 확인
+
+```bash
+ls -al
+total 16
+drwxrwxrwx 2 gnd0 gnd0 4096  7월 14 10:54 .
+drwxrwxrwx 3 gnd0 gnd0 4096  7월  2 13:06 ..
+-rwxrwxrwx 1 gnd0 gnd0  718  7월 14 10:54 example_pub.py
+-rwxrwxrwx 1 gnd0 gnd0  529  7월  9 01:45 example_sub.py
+```
+
+
+
+`example_sub.py`파일 편집
+
+```
+gedit example_sub.py &
+```
+
+```python
+#!/usr/bin/env python3
+
+import rospy
+from std_msgs.msg import String
+
+class ExampleSub:
+
+    def __init__(self):
+        rospy.init_node("example_sub", anonymous=True)
+        rospy.Subscriber("/hello", String, self.callback)
+        
+    def callback(self, msg):
+        print("%s" %msg.data)
+
+def main():
+    try:
+        node = ExampleSub()
+        rospy.spin()
+
+    except (KeyboardInterrupt, rospy.ROSInterruptException):
+        print("Program terminated!")
+    finally:
+        pass
+
+if __name__ == "__main__":
+    main()
+```
+
+
+
+
+
+
+
+
+
+### 4. rospy_tutorial 패키지 빌드
+
+`rospy_tutorial` 패키지에 ` example_sub.py`노드가 추가되었으므로 `rospy_tutorial` 패키지를 다시 빌드해야한다. 
+
+`catkin_make` 실행을 위해 작업 경로를 catkin workspace 로 사용하고 있는 `~/catkin_ws` 로 변경한다.
+
+```bash
+cd ~/catkin_ws
+```
+
+`catkin_make` 실행.
+
+```bash
+catkin_make
+```
+
+빌드작업으로 변경된  `~/catkin_ws/devel/setup.bash` 의 내용을 `source` 명령을 이용하여 반영시킨다.
+
+```bash
+source ./devel/setup.bash
+```
+
+
+
+### 5. `example_pub.py`구동
+
+`roscore`, `example_pub.py`가 구동된 상태에서 `example_sub.py`노드를 구동한다. 
+
+```bash
+rosrun rospy_tutorial example_sub.py
+```
+
+```bash
+rosrun rospy_tutorial example_sub.py 
+hello world 1783998222.9638186
+hello world 1783998223.0637865
+hello world 1783998223.1637855
+hello world 1783998223.2639637
+hello world 1783998223.3639643
+hello world 1783998223.4639268
+hello world 1783998223.5639706
+hello world 1783998223.6639717
+hello world 1783998223.7637818
+hello world 1783998223.8639686
+hello world 1783998223.9639366
 ```
 
 
