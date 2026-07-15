@@ -20,9 +20,16 @@
 
 작업경로를 ```~/catkin_ws/src``` 로 변경 후,  ```catkin_create_pkg``` 명령으로  ```rospy``` 에 의존하는`turtle_pkg ` 패키지 생성.
 
+작업경로 변경
+
 ```bash
-$ cd ~/catkin_ws/src
-$ catkin_create_pkg turtle_pkg rospy
+cd ~/catkin_ws/src
+```
+
+패키지 생성
+
+```bash
+catkin_create_pkg turtle_pkg rospy
 ```
 
 생성된 ```turtle_pkg``` 패키지 폴더로 경로 변경 후, 폴더 내용 확인.
