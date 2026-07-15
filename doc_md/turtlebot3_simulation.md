@@ -1,0 +1,201 @@
+## Turtlebot3 시뮬레이션
+
+
+
+
+
+---
+
+## Turtlebot3 Gazebo 시뮬레이션
+
+**Turtlebot3 Gazebo** 시뮬레이션을 이용하여 **SLAM** / **Navigation** 실습을 해보자.
+
+**출처 :**  <https://docs.robotis.com/docs/systems/turtlebot3/simulation/gazebo_simulation>
+
+**튜토리얼 레벨 :**  초급
+
+**선수 학습 :**  ROS 튜토리얼
+
+**빌드 환경 :**  catkin **/** Ubuntu 20.04 **/** Noetic
+
+---
+
+#### 1. ROS 의존성 설치
+
+```
+sudo apt-get install ros-noetic-joy ros-noetic-teleop-twist-joy \
+  ros-noetic-teleop-twist-keyboard ros-noetic-laser-proc \
+  ros-noetic-rgbd-launch ros-noetic-rosserial-arduino \
+  ros-noetic-rosserial-python ros-noetic-rosserial-client \
+  ros-noetic-rosserial-msgs ros-noetic-amcl ros-noetic-map-server \
+  ros-noetic-move-base ros-noetic-urdf ros-noetic-xacro \
+  ros-noetic-compressed-image-transport ros-noetic-rqt* ros-noetic-rviz \
+  ros-noetic-gmapping ros-noetic-navigation ros-noetic-interactive-markers
+```
+
+
+
+#### 2. 터틀봇3 ROS 패키지 설치
+
+```
+sudo apt install ros-noetic-dynamixel-sdk ros-noetic-turtlebot3-msgs ros-noetic-turtlebot3
+```
+
+
+
+#### 3. 터틀봇3 ROS 시뮬레이션 패키지 설치
+
+**`~/catkin_ws/src`로 작업경로 변경**
+
+```
+cd ~/catkin_ws/src
+```
+
+
+
+**터틀봇3 ROS 시뮬레이션 패키지 소스코드 복제**
+
+```
+git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+```
+
+
+
+**빌드**
+
+```
+cd ~/catkin_ws && catkin_make
+```
+
+
+
+**터틀봇3 모델 설정**
+
+```
+export TURTLEBOT3_MODEL=burger
+```
+
+
+#### 4. `turtlebot3_world` 에서 `Gazebo`시뮬레이션구동
+
+```
+roslaunch turtlebot3_gazebo turtlebot3_world.launch use_sim_time:= true
+```
+
+![](./img/turtlebot3_gazebo_turtlebot3world.png)
+
+
+
+
+
+#### 5.SLAM 노드구동
+
+**5.1 로봇 모델 설정**
+
+터틀봇3는 `burger`, `wapple`,  `wapple_pi` 3가지 모델이 있다.
+
+```
+export TURTLEBOT3_MODEL=burger
+```
+
+**5.2 SLAM 구동**
+
+```
+ roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping use_sim_time:= true
+```
+
+**5.3 원격 조종 노드 구동**
+
+```
+roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+```
+
+```
+oslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+
+ Control Your TurtleBot3!
+ ---------------------------
+ Moving around:
+        w
+   a    s    d
+        x
+
+ w/x : increase/decrease linear velocity
+ a/d : increase/decrease angular velocity
+ space key, s : force stop
+
+ CTRL-C to quit
+```
+
+
+
+![](./img/turtlebot3virtual_slam.png)
+
+**5.4 작성된 지도 저장**
+
+```
+rosrun map_server map_saver -f ~/map
+```
+
+
+
+#### 6. Navigation 구동
+
+**6.1 로봇 모델 설정**
+
+```
+export TURTLEBOT3_MODEL=burger
+```
+
+**6.2 Navigation 구동**
+
+```
+roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml use_sim_time:=true
+```
+
+
+
+**6.3 Pose Estimate**
+
+**내비게이션을 실행하기 전에 초기 자세 추정을** 수행해야 합니다. 이 과정은 정확한 내비게이션에 필수적인 AMCL 매개변수를 초기화합니다. TurtleBot3는 LDS 센서 데이터를 사용하여 지도에 정확하게 위치해야 하며, 해당 데이터가 표시된 지도와 정확히 겹쳐야 한다.
+
+1. RViz2 메뉴에서 `2D Pose Estimate`버튼 클릭 .
+2. 지도에서 로봇의 실제 위치를 클릭하고 큰 녹색 화살표를 로봇이 바라보는 방향으로 드래그하세요.
+3. 저장된 지도에 LDS 센서 데이터가 겹쳐질 때까지 1단계와 2단계를 반복합니다.
+
+![](./img/tb3_navigation2_rviz_01.png)
+
+**6.4 키보드 원격 조종 노드 실행**
+
+```
+roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+```
+
+로봇을 천천히 움직여 녹색 점들로 표시된 지도상에서의 추정된 로봇의 위치를 일치시킨다.
+
+![](./img/tb3_amcl_particle_02.png)  ![](./img/tb3_amcl_particle_02.png)
+
+6.5 Navigation 목표 위치 설정
+
+1. RViz2 메뉴에서 `Navigation2 Goal`버튼 클릭.
+2. 지도에서 로봇의 목적지를 클릭하고 녹색 화살표를 로봇이 향할 방향으로 드래그.
+   - 이 녹색 화살표는 로봇의 목적지를 나타내는 표식입니다.
+   - 화살표의 시작점은 목적지의 좌표이고, 각도는 화살표 의 방향에 따라 결정된다.
+   - `x`, `y`, `θ` 값이 설정되는 즉시 TurtleBot3는 목적지를 향해 즉시 이동을 시작한다.
+
+![](./img/tb3_navigation2_rviz_02.png)
+
+
+
+
+
+
+
+[튜토리얼 목록](../README.md) 
+
+
+
+
+
+
+

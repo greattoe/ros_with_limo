@@ -183,6 +183,73 @@ export ROS_HOSTNAME=[Limo로봇의 IP주소]
 ```
 
 ```
+roslaunch limo_bringup limo_start.launch 
+... logging to /home/wego/.ros/log/bf20c304-800d-11f1-93b4-23a5b90f8599/roslaunch-wego-robotics-2955.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://10.42.0.176:45715/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /limo_base_node/base_frame: base_link
+ * /limo_base_node/odom_frame: odom
+ * /limo_base_node/port_name: ttyTHS1
+ * /limo_base_node/pub_odom_tf: 
+ * /limo_base_node/use_mcnamu: False
+ * /rosdistro: melodic
+ * /rosversion: 1.14.12
+ * /ydlidar_node/angle_max: 90.0
+ * /ydlidar_node/angle_min: -90.0
+ * /ydlidar_node/auto_reconnect: True
+ * /ydlidar_node/baudrate: 115200
+ * /ydlidar_node/frame_id: laser_link
+ * /ydlidar_node/frequency: 8.0
+ * /ydlidar_node/ignore_array: 
+ * /ydlidar_node/isSingleChannel: True
+ * /ydlidar_node/port: /dev/ydlidar
+ * /ydlidar_node/range_max: 12.0
+ * /ydlidar_node/range_min: 0.1
+ * /ydlidar_node/resolution_fixed: True
+ * /ydlidar_node/reversion: True
+ * /ydlidar_node/samp_rate: 3
+
+NODES
+  /
+    base_link_to_camera_link (tf/static_transform_publisher)
+    base_link_to_imu_link (tf/static_transform_publisher)
+    base_link_to_laser_link (tf/static_transform_publisher)
+    limo_base_node (limo_base/limo_base_node)
+    ydlidar_node (ydlidar_ros/ydlidar_node)
+
+ROS_MASTER_URI=http://10.42.0.1:11311
+
+process[limo_base_node-1]: started with pid [2966]
+process[ydlidar_node-2]: started with pid [2967]
+process[base_link_to_camera_link-3]: started with pid [2968]
+__   ______  _     ___ ____    _    ____  
+\ \ / /  _ \| |   |_ _|  _ \  / \  |  _ \ 
+ \ V /| | | | |    | || | | |/ _ \ | |_) | 
+  | | | |_| | |___ | || |_| / ___ \|  _ <  
+  |_| |____/|_____|___|____/_/   \_\_| \_\ 
+
+process[base_link_to_imu_link-4]: started with pid [2969]
+process[base_link_to_laser_link-5]: started with pid [2973]
+[ INFO] [1784093297.799046102]: open the serial port: /dev/ttyTHS1
+[ INFO] [1784093297.844127204]: [YDLIDAR INFO] Now YDLIDAR ROS SDK VERSION:1.4.6 .......
+YDLidar SDK initializing
+YDLidar SDK has been initialized
+[YDLIDAR]:SDK Version: 1.4.7
+LiDAR successfully connected
+[YDLIDAR]:Lidar running correctly ! The health status: good
+LiDAR init success!
+[YDLIDAR]:Fixed Size: 420
+[YDLIDAR]:Sample Rate: 4K
+[YDLIDAR INFO] Current Sampling Rate : 4K
+[YDLIDAR INFO] Now YDLIDAR is scanning ......
 ```
 
 
