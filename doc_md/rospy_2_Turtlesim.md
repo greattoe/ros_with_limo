@@ -63,7 +63,7 @@ drwxrwxr-x 3 gnd0 gnd0 4096  7월 13 16:36 ..
 -rw-rw-r-- 1 gnd0 gnd0    0  7월 14 09:06 circle_move.py
 ```
 
-`chmod +x example_pub.py`명령으로 생성된 `circle_move.py`파일에 실행 속성을 부여한다.
+`touch circle_move.py`명령으로 생성된 `circle_move.py`파일에 실행 속성을 부여한다.
 
 ```bash
 chmod +x circle_move.py
@@ -79,7 +79,7 @@ drwxrwxr-x 3 gnd0 gnd0 4096  7월 13 16:36 ..
 -rwxrwxr-x 1 gnd0 gnd0    0  7월 14 09:06 circle_move.py
 ```
 
-`example_pub.py` 파일 편집을 위해 다음 명령을 실행한다.
+`circle_move.py` 파일 편집을 위해 다음 명령을 실행한다.
 
 ```bash
 gedit circle_move.py &

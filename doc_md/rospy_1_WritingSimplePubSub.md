@@ -137,9 +137,9 @@ def main():
             rate.sleep()
 
     except (KeyboardInterrupt, rospy.ROSInterruptException):
-        print("Program terminated!")
-    finally:
         pass
+    finally:
+        print("Program terminated!")
 
 if __name__ == "__main__":
     main()
@@ -289,9 +289,9 @@ def main():
         rospy.spin()
 
     except (KeyboardInterrupt, rospy.ROSInterruptException):
-        print("Program terminated!")
-    finally:
         pass
+    finally:
+        print("Program terminated!")
 
 if __name__ == "__main__":
     main()
