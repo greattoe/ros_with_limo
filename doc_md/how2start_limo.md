@@ -39,10 +39,10 @@
 
 ##### 2.1 Limo 로봇
 
-준비된 휴대폰 핫스팟에 연결 후 터미널을 열어 `openssh-server` 설치
+준비된 휴대폰 핫스팟에 연결 후 터미널을 열어 `openssh-server` 와 ` sudo apt install ros-melodic-usb-cam`설치
 
 ```bash
-sudo apt install openssh-server
+sudo apt install openssh-server  sudo apt install ros-melodic-usb-cam
 ```
 
 
@@ -184,7 +184,7 @@ source ~/.bashrc
 
 
 
-`ssh`원격 접속화면에서 Limo 로봇 구동 `launch`파일을 실행한다.
+**<u>PC에서 우선 `roscore`를 구동 후</u>**, `ssh`원격 접속화면에서 Limo 로봇 구동 `launch`파일을 실행한다.
 
 ```
  roslaunch limo_bringup limo_start.launch
@@ -261,6 +261,43 @@ LiDAR init success!
 ```
 
 
+
+Limo 로봇 카메라 구동
+
+새 터미널에서 Limo 로봇에  `ssh`원격 접속 후 `usb_cam`패키지의 `usb_cam_node`를 구동한다. 
+
+```
+rosrun usb_cam usb_cam_node
+```
+
+PC에서 `rostopic list`명령으로 `/usb_cam/camera_info`토픽과 `/usb_cam/image_raw`토픽 발행을 확인한다.
+
+```
+rostopic list
+```
+
+```
+rostopic list 
+/rosout
+/rosout_agg
+/usb_cam/camera_info
+/usb_cam/image_raw
+/usb_cam/image_raw/compressed
+/usb_cam/image_raw/compressed/parameter_descriptions
+/usb_cam/image_raw/compressed/parameter_updates
+/usb_cam/image_raw/compressedDepth
+/usb_cam/image_raw/compressedDepth/parameter_descriptions
+/usb_cam/image_raw/compressedDepth/parameter_updates
+/usb_cam/image_raw/theora
+/usb_cam/image_raw/theora/parameter_descriptions
+/usb_cam/image_raw/theora/parameter_updates
+```
+
+PC에서 `rqt_image_view`를 실행 후, `rqt`화면에서 `/usb_cam/image_raw`토픽을 선택해 준다.
+
+
+
+<img src="./img/rqt_image_view.png" style="zoom:50%;" />
 
 PC에서 `rostopic pub `명령으로 로봇을 움직여보자.
 
