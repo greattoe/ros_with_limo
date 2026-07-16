@@ -132,14 +132,14 @@ ssh wego@10.42.0.3
 
 ```
 ssh wego@10.42.0.3
-wego@10.42.0.176's password:
+wego@10.42.0.3's password:
 ```
 
 이 때 패스워드는 `wego`를 입력한다.
 
 ```
 ssh wego@10.42.0.3
-wego@10.42.0.176's password: 
+wego@10.42.0.3's password: 
 Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 4.9.253-tegra aarch64)
 
  * Documentation:  https://help.ubuntu.com
@@ -175,6 +175,14 @@ export ROS_HOSTNAME=[Limo로봇의 IP주소]
 이 경우 [노트북PC의 IP주소]`10.42.0.2`, [Limo로봇의 IP주소]`10.42.0.3`
 
 편집이 완료되면 `Ctrl-X`, `y`, `Enter`순으로 입력하여 편집내용을 저장 후 종료한다. 
+
+`ssh`원격 접속화면에서`source`명령으로 변경된  `~/.bashrc` 반영
+
+```
+source ~/.bashrc
+```
+
+
 
 `ssh`원격 접속화면에서 Limo 로봇 구동 `launch`파일을 실행한다.
 
@@ -254,7 +262,7 @@ LiDAR init success!
 
 
 
-`rostopic pub `명령으로 로봇을 움직여보자.
+PC에서 `rostopic pub `명령으로 로봇을 움직여보자.
 
 ```bash
 rostopic pub -r 10 /cmd_vel geometry_msgs/Twist \
