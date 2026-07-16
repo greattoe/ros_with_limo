@@ -182,7 +182,7 @@ export ROS_HOSTNAME=[Limo로봇의 IP주소]
  roslaunch limo_bringup limo_start.launch
 ```
 
-```
+```bash
 roslaunch limo_bringup limo_start.launch 
 ... logging to /home/wego/.ros/log/bf20c304-800d-11f1-93b4-23a5b90f8599/roslaunch-wego-robotics-2955.log
 Checking log directory for disk usage. This may take a while.
@@ -254,7 +254,374 @@ LiDAR init success!
 
 
 
+`rostopic pub `명령으로 로봇을 움직여보자.
 
+```bash
+rostopic pub -r 10 /cmd_vel geometry_msgs/Twist \
+'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.125}}'
+```
+
+시뮬레이션 화면상의 Limo로봇이 제자리에서 왼쪽으로 천천히 회전한다.
+
+로봇을 정지 시키려면 다음 명령을 실행한다.
+
+```bash
+rostopic pub -1 /cmd_vel geometry_msgs/Twist \
+'{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'
+```
+
+
+
+#### 3. `limo_pkg`를 만들고 Limo로봇을 키보드로 원격제어하는 `remote_turtle.py`노드를 만들어보자. 
+
+**3.1 limo_pkg 생성**
+
+작업경로를 `~/catkin_ws/src`로 변경
+
+```bash
+cd ~/catkin_ws/src
+```
+
+`rospy`에 대해 의존성을 갖는 ROS 패키지 `limo_pkg`생성
+
+```bash
+catkin_create_pkg limo_pkg rospy
+```
+
+이 전에 만들어 둔 `turtle_pkg`에서 `remote_turtle.py`와 `getchar.py`파일을 `~/catkin_ws/src/limo_pkg/src`로 복사한다.
+
+```bash
+cp ~/catkin_ws/src/turtle_pkg/src/getchar.py ~/catkin_ws/src/limo_pkg/src/
+```
+
+```bash
+cp ~/catkin_ws/src/turtle_pkg/src/remote_turtle.py ~/catkin_ws/src/limo_pkg/src
+```
+
+복사한 `remote_turtle.py`를 `remote_limo.py`로 파일명 변경.
+
+```bash
+mv ~/catkin_ws/src/limo_pkg/src/remote_turtle.py  ~/catkin_ws/src/limo_pkg/src/remote_tlimo.py
+```
+
+`~/catkin_ws/src/limo_pkg/src`의 내용확인
+
+```bash
+~/catkin_ws/src/limo_pkg/src
+```
+
+```bash
+ls -al ~/catkin_ws/src/limo_pkg/src
+total 20
+drwxrwxr-x 3 gnd0 gnd0 4096  7월 15 14:53 .
+drwxrwxr-x 3 gnd0 gnd0 4096  7월 15 14:29 ..
+-rw-rw-r-- 1 gnd0 gnd0 1118  7월 15 14:33 getchar.py
+drwxrwxr-x 2 gnd0 gnd0 4096  7월 15 14:53 __pycache__
+-rwxrwxr-x 1 gnd0 gnd0 2466  7월 15 14:51 remote_limo.py
+```
+
+
+
+` remote_limo.py` 편집
+
+```bash
+gedit ~/catkin_ws/src/limo_pkg/src/remote_tlimo.py
+```
+
+```python
+#!/usr/bin/env python3
+
+import rospy, os
+from getchar import Getchar
+from geometry_msgs.msg import Twist
+
+MAX_LIN_SPD = 0.55
+MIN_LIN_SPD = -0.55
+MAX_ANG_SPD = 1.0
+MIN_ANG_SPD = -1.0
+
+LIN_SPD_STEP = 0.025
+ANG_SPD_STEP = 0.020
+
+msg = """
+==========================
+ LIMO Keyboard Teleop
+==========================
+
+w : linear.x +0.025
+s : linear.x -0.025
+
+a : angular.z +0.020
+d : angular.z -0.020
+
+SPACE : Stop
+
+CTRL+C : Quit
+==========================
+"""
+
+class RemoteLIMO():
+
+    def __init__(self):
+        rospy.init_node("remote_limo")
+        
+
+
+def main():
+    try:
+        node = RemoteLIMO()
+
+        pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+        tw = Twist()
+        kb = Getchar()
+        rate = rospy.Rate(20)
+
+        print(msg)
+
+        while not rospy.is_shutdown():
+            if kb.chk_stdin():
+                ch = kb.getch()
+
+                if ch == 'w':
+                    if tw.linear.x + LIN_SPD_STEP <= MAX_LIN_SPD:
+                        tw.linear.x = tw.linear.x + LIN_SPD_STEP
+                    else:
+                        tw.linear.x = MAX_LIN_SPD
+
+                elif ch == 's':
+                    if tw.linear.x - LIN_SPD_STEP >= MIN_LIN_SPD:
+                        tw.linear.x = tw.linear.x - LIN_SPD_STEP
+                    else:
+                        tw.linear.x = MIN_LIN_SPD
+
+                elif ch == 'a':
+                    if tw.angular.z + ANG_SPD_STEP <= MAX_ANG_SPD:
+                        tw.angular.z = tw.angular.z + ANG_SPD_STEP
+                    else:
+                        tw.angular.z = MAX_ANG_SPD
+
+                elif ch == 'd':
+                    if tw.angular.z - ANG_SPD_STEP >= MIN_ANG_SPD:
+                        tw.angular.z = tw.angular.z - ANG_SPD_STEP
+                    else:
+                        tw.angular.z = MIN_ANG_SPD
+
+                elif ch == ' ':
+                    tw.linear.x = tw.angular.z = 0.0
+
+                elif ch == 'q':
+                    break
+
+                print("linear.x = %.3f, angular.z = %.3f" % (tw.linear.x, tw.angular.z))
+
+            pub.publish(tw)
+            rate.sleep()
+        tw.linear.x = tw.angular.z = 0.0;   pub.publish(tw)
+    except (KeyboardInterrupt, rospy.ROSInterruptException):
+        print("Program terminated!")
+    finally:
+        os.system("rostopic pub -1 /cmd_vel geometry_msgs/Twist '{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}'")
+
+if __name__ == "__main__":
+    main()
+```
+
+
+
+#### PC에 limo ROS 패키지 설치
+
+`~/catkin_ws/src`로 작업경로 변경
+
+```bash
+cd ~/catkin_ws/src
+```
+
+ **limo ROS 패키지 소스코드 복제**
+
+```bash
+git clone https://github.com/agilexrobotics/limo_ros.git
+```
+
+ **limo ROS 패키지 빌드**
+
+```bash
+cd ~/catkin_ws && catkin_make
+```
+
+**새로 빌드된 패키지 정보 반영**
+
+```
+source ~/catkin_ws/devel/setup.bash
+```
+
+**구동할 수 있는 `launch`파일 찾아보기**
+
+```
+ls -l ~/catkin_ws/src/limo_ros/limo_bringup/launch
+total 28
+-rw-rw-r-- 1 gnd0 gnd0  848  7월 16 09:29 limo_amcl.launch
+-rw-rw-r-- 1 gnd0 gnd0  608  7월 16 09:29 limo_cartographer.launch
+-rw-rw-r-- 1 gnd0 gnd0 1755  7월 16 09:29 limo_gmapping.launch
+-rw-rw-r-- 1 gnd0 gnd0 2024  7월 16 09:29 limo_navigation_ackerman.launch
+-rw-rw-r-- 1 gnd0 gnd0 1927  7월 16 09:29 limo_navigation_diff.launch
+-rw-rw-r-- 1 gnd0 gnd0  779  7월 16 09:29 limo_start.launch
+-rw-rw-r-- 1 gnd0 gnd0  271  7월 16 09:29 limo_teletop_keyboard.launch
+```
+
+**`limo_teletop_keyboard.launch`실행**
+
+`roscore`가 구동된 상태에서 다음 명령 실행
+
+```
+roslaunch limo_bringup limo_teletop_keyboard.launch
+```
+
+패키지 빌드가 제대로 되었는가를 확인할 목적이므로 로봇에서 `limo_start.launch`는 실행하지 않았음.
+
+다른 런치 파일들(`limo_gmapping.launch`, `limo_navigation_diff.launch` 등)도 동일하게 구동할 수 있다.
+
+
+
+#### PC에 limo Gazebo 시뮬레이션 패키지 설치
+
+`~/catkin_ws/src`로 작업경로 변경
+
+```bash
+cd ~/catkin_ws/src
+```
+
+ **limo_gazebo_sim 패키지 소스코드 복제**
+
+```bash
+git clone https://github.com/greattoe/limo_gazebo_sim.git
+```
+
+**패키지 빌드**
+
+```bash
+cd ~/catkin_ws && catkin_make
+```
+
+새로 빌드된 패키지 정보 반영
+
+```
+source ~/catkin_ws/devel/setup.bash
+```
+
+구동할 수 있는 `launch`파일 찾아보기
+
+```
+l ~/catkin_ws/src/limo_gazebo_sim/launch/
+total 16
+-rwxrwxrwx 1 gnd0 gnd0 1848  7월  3 03:56 limo_ackerman.launch
+-rwxrwxrwx 1 gnd0 gnd0 1751  7월  3 03:56 limo_four_diff_empty_world.launch
+-rwxrwxrwx 1 gnd0 gnd0 1792  7월 16 06:16 limo_four_diff_turtlebot3world.launch
+-rwxrwxrwx 1 gnd0 gnd0 3873  7월 11 23:16 limo_gmapping.launch
+```
+
+` limo_four_diff_turtlebot3world.launch`구동
+
+```
+roslaunch limo_gazebo_sim limo_four_diff_turtlebot3world.launch
+```
+
+![](./img/limo_gazebo_turtlebot3world.png)
+
+![](./img/limo_rviz_turtlebot3world.png)
+
+
+
+
+
+```
+rostopic list
+```
+
+```
+rostopic list
+/camera_ir/parameter_descriptions
+/camera_ir/parameter_updates
+/clicked_point
+/clock
+/cmd_vel
+/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/performance_metrics
+/gazebo/set_link_state
+/gazebo/set_model_state
+/gazebo_ros_control/pid_gains/front_left_wheel/parameter_descriptions
+/gazebo_ros_control/pid_gains/front_left_wheel/parameter_updates
+/gazebo_ros_control/pid_gains/front_right_wheel/parameter_descriptions
+/gazebo_ros_control/pid_gains/front_right_wheel/parameter_updates
+/gazebo_ros_control/pid_gains/rear_left_wheel/parameter_descriptions
+/gazebo_ros_control/pid_gains/rear_left_wheel/parameter_updates
+/gazebo_ros_control/pid_gains/rear_right_wheel/parameter_descriptions
+/gazebo_ros_control/pid_gains/rear_right_wheel/parameter_updates
+/initialpose
+/joint_states
+/limo/color/camera_info
+/limo/color/image_raw
+/limo/color/image_raw/compressed
+/limo/color/image_raw/compressed/parameter_descriptions
+/limo/color/image_raw/compressed/parameter_updates
+/limo/color/image_raw/compressedDepth
+/limo/color/image_raw/compressedDepth/parameter_descriptions
+/limo/color/image_raw/compressedDepth/parameter_updates
+/limo/color/image_raw/mouse_click
+/limo/color/image_raw/theora
+/limo/color/image_raw/theora/parameter_descriptions
+/limo/color/image_raw/theora/parameter_updates
+/limo/depth/camera_info
+/limo/depth/image_raw
+/limo/depth/image_raw/mouse_click
+/limo/depth/points
+/limo/imu
+/limo/scan
+/move_base_simple/goal
+/odom
+/rosout
+/rosout_agg
+/tf
+/tf_static
+```
+
+Gazebo 시뮬레이션을 사용할 경우 `roscore` , `limo_bringup`패키지의 `limo_start.launch`를 구동하지 않아도 된다. 위 `rostopic list`명령 실행 결과를 보면, 이미 필요한 토픽들이 모두 시뮬레이션 된 것을 볼 수 있다.
+
+이제 앞서 작업한 `limo_pkg`의 `remote_limo.py`노드를 구동하여 시뮬레이션 된 limo로봇을 제어해보자.
+
+```
+rosrun limo_pkg remote_limo.py
+```
+
+```
+rosrun limo_pkg remote_limo.py 
+
+==========================
+ LIMO Keyboard Teleop
+==========================
+
+w : linear.x +0.025
+s : linear.x -0.025
+
+a : angular.z +0.020
+d : angular.z -0.020
+
+SPACE : Stop
+
+CTRL+C : Quit
+==========================
+
+linear.x = 0.025, angular.z = 0.000
+linear.x = 0.050, angular.z = 0.000
+linear.x = 0.075, angular.z = 0.000
+linear.x = 0.000, angular.z = 0.000
+linear.x = 0.000, angular.z = 0.020
+linear.x = 0.000, angular.z = 0.040
+linear.x = 0.000, angular.z = 0.020
+linear.x = 0.000, angular.z = 0.000
+```
 
 
 
