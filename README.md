@@ -1,4 +1,5 @@
 ## LIMO 로봇을 이용한  ROS 실습
+<img src="./doc_md/img/agilex_limo3.jpeg" style="zoom: 50%;" /><img src="./doc_md/img/agilex_limo2.jpeg" style="zoom: 50%;" />
 
 #### [ROS 설치 및 설정](doc_md/install_ROS_Noetic.md)
 
@@ -8,7 +9,11 @@
 
 #### [Limo로봇 시작하기](doc_md/how2start_limo.md)
 
+#### [Limo로봇 키보드 원격제어 노드 작성](doc_md/teleop_key4limo.md)
+
 #### [터틀봇3 시뮬레이션을 이용한 SLAM & Navigation 실습](doc_md/turtlebot3_simulation.md)
+
+
 
 
 
