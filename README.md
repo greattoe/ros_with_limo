@@ -8,7 +8,7 @@
 
 #### [Limo로봇 시작하기](doc_md/how2start_limo.md)
 
-#### [터틀봇3 시뮬레이션을 이용한 SLAM & Navigation](doc_md/turtlebot3_simulation.md)
+#### [터틀봇3 시뮬레이션을 이용한 SLAM & Navigation 실습](doc_md/turtlebot3_simulation.md)
 
 
 

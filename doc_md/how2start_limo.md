@@ -340,6 +340,96 @@ rostopic pub -1 /cmd_vel geometry_msgs/Twist \
 
 
 
+**5.4 `limo_ros`** (agilexrobotics에서 제공하는 Limo로봇用 ROS 패키지)**를 설치하여  키보드로 원격제어하기.**
+
+##### 5.4.1 `limo_ros` 설치
+
+ ##### limo ROS 패키지 소스코드 복제를 위한 작업경로 변경
+
+```bash
+cd ~/catkin_ws/src
+```
+
+**limo ROS 패키지 소스코드 복제**
+
+```bash
+git clone https://github.com/agilexrobotics/limo_ros.git
+```
+
+ **limo ROS 패키지 빌드**
+
+```bash
+cd ~/catkin_ws && catkin_make
+```
+
+**새로 빌드된 패키지 정보 반영**
+
+```bash
+source ~/catkin_ws/devel/setup.bash
+```
+
+
+
+
+
+**`limo_teletop_keyboard.launch`실행**
+
+```bash
+roslaunch limo_bringup limo_teletop_keyboard.launch
+```
+
+다음 설명을 참조하여 Limo 로봇을 조종해보자.
+
+### 기본 이동 키
+
+```
+u    i    o
+j    k    l
+m    ,    .
+```
+
+| 키   | 동작              |
+| ---- | ----------------- |
+| `i`  | 전진              |
+| `,`  | 후진              |
+| `j`  | 제자리 좌회전     |
+| `l`  | 제자리 우회전     |
+| `u`  | 전진하면서 좌회전 |
+| `o`  | 전진하면서 우회전 |
+| `m`  | 후진하면서 좌회전 |
+| `.`  | 후진하면서 우회전 |
+| `k`  | 정지              |
+
+영문 입력 상태에서 사용해야 하며, 명령을 실행한 터미널에 포커스가 있어야 합니다.
+
+### 속도 조절
+
+현재 초기 속도는 다음과 같습니다.
+
+```
+speed 0.5
+turn 1.0
+```
+
+즉,
+
+```
+linear.x 최대값: 0.5 m/s
+angular.z 최대값: 1.0 rad/s
+```
+
+속도 조절 키는 다음과 같습니다.
+
+| 키   | 동작                            |
+| ---- | ------------------------------- |
+| `q`  | 선속도와 회전속도 모두 10% 증가 |
+| `z`  | 선속도와 회전속도 모두 10% 감소 |
+| `w`  | 선속도만 10% 증가               |
+| `x`  | 선속도만 10% 감소               |
+| `e`  | 회전속도만 10% 증가             |
+| `c`  | 회전속도만 10% 감소             |
+
+
 
 
 [튜토리얼 목록](../README.md) 
