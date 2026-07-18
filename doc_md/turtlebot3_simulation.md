@@ -22,7 +22,7 @@
 
 #### 1. ROS 의존성 설치
 
-```
+```bash
 sudo apt-get install ros-noetic-joy ros-noetic-teleop-twist-joy \
   ros-noetic-teleop-twist-keyboard ros-noetic-laser-proc \
   ros-noetic-rgbd-launch ros-noetic-rosserial-arduino \
@@ -37,7 +37,7 @@ sudo apt-get install ros-noetic-joy ros-noetic-teleop-twist-joy \
 
 #### 2. 터틀봇3 ROS 패키지 설치
 
-```
+```bash
 sudo apt install ros-noetic-dynamixel-sdk ros-noetic-turtlebot3-msgs ros-noetic-turtlebot3
 ```
 
@@ -47,7 +47,7 @@ sudo apt install ros-noetic-dynamixel-sdk ros-noetic-turtlebot3-msgs ros-noetic-
 
 **`~/catkin_ws/src`로 작업경로 변경**
 
-```
+```bash
 cd ~/catkin_ws/src
 ```
 
@@ -55,7 +55,7 @@ cd ~/catkin_ws/src
 
 **터틀봇3 ROS 시뮬레이션 패키지 소스코드 복제**
 
-```
+```bash
 git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 ```
 
@@ -63,7 +63,7 @@ git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 
 **빌드**
 
-```
+```bash
 cd ~/catkin_ws && catkin_make
 ```
 
@@ -71,14 +71,33 @@ cd ~/catkin_ws && catkin_make
 
 **터틀봇3 모델 설정**
 
-```
+터틀봇3는 `burger`, `wapple`, `wapple_pi` 3가지 모델이 있으므로 어떤 모델을 시뮬레이션할 것인가를 정해줘야한다.
+
+```bash
 export TURTLEBOT3_MODEL=burger
 ```
+
+터미널을 열 때 마다 자동으로 적용되도록 `~/.bashrc`에 `export TURTLEBOT3_MODEL=burger`를 추가하자.
+
+```bash
+gedit ~/.bashrc
+```
+
+`export ROS_HOSTNAME`을 찾아서 그다음 행에 에 `export TURTLEBOT3_MODEL=burger` 추가 후, 저장, 종료한다.
+
+터미널을 새로열면  `export TURTLEBOT3_MODEL=burger`가 자동 반영된다.
+
+현재 이미 열려 있는터미널에 반영하려면 해당 터미널에서`~/.bashrc`를 `source`한다.
+
+```bash
+source ~/.bashrc
+```
+
 
 
 #### 4. `turtlebot3_world` 에서 `Gazebo`시뮬레이션구동
 
-```
+```bash
 roslaunch turtlebot3_gazebo turtlebot3_world.launch use_sim_time:=true
 ```
 
@@ -91,8 +110,6 @@ roslaunch turtlebot3_gazebo turtlebot3_world.launch use_sim_time:=true
 #### 5.SLAM 노드구동
 
 **5.1 로봇 모델 설정**
-
-터틀봇3는 `burger`, `wapple`,  `wapple_pi` 3가지 모델이 있다.
 
 ```
 export TURTLEBOT3_MODEL=burger
@@ -133,8 +150,18 @@ oslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 
 **5.4 작성된 지도 저장**
 
+위 오른쪽 그림과 같이 모든 영역을 탐색하여 밝은 영역으로 만들었다면 현재 상태를 지도로 저장한다.
+
 ```
 rosrun map_server map_saver -f ~/map
+```
+
+지도저장 확인
+
+```
+ls -al ~/map.*
+-rw-rw-r-- 1 gnd0 gnd0 14275  5월  3  2023 /home/gnd0/map.pgm
+-rw-rw-r-- 1 gnd0 gnd0   132  7월 16 16:00 /home/gnd0/map.yaml
 ```
 
 
@@ -189,7 +216,11 @@ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 
 네비게이션 `rviz`화면에 `publish point` 버튼이 나타나지 않을 경우 
 
-`/opt/ros/noetic/share/turtlebot3_navigation/rviz/turtlebot3_navigation.rviz`파일에 다음과 같이 `Tools:`부분을 추가한다.
+`~/turtlebot3_navigation.rviz`작성
+
+```
+gedit ~/turtlebot3_navigation.rviz
+```
 
 ```yaml
 Panels:
@@ -558,6 +589,24 @@ Window Geometry:
   X: 0
   Y: 0
 ```
+
+`~/turtlebot3_navigation.rviz`저장 후 `/opt/ros/noetic/share/turtlebot3_navigation/rviz`에 복사.
+
+```bash
+sudo cp turtlebot3_navigation.rviz /opt/ros/noetic/share/turtlebot3_navigation/rviz/
+```
+
+다시 네비게이션을 구동하면 `publish point`버튼이 `rviz`화면에 나타난다.
+
+![](/home/gnd0/ros_with_limo/doc_md/img/rviz_publish_point_button.png)
+
+
+
+
+
+
+
+
 
 
 
