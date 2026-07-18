@@ -598,11 +598,11 @@ sudo cp turtlebot3_navigation.rviz /opt/ros/noetic/share/turtlebot3_navigation/r
 
 다시 네비게이션을 구동하면 `publish point`버튼이 `rviz`화면에 나타난다.
 
-![](/home/gnd0/ros_with_limo/doc_md/img/rviz_publish_point_button.png)
+![](./img/rviz_publish_point_button.png)
 
 
 
-
+![](./img/rviz_publish_point_button2.png)
 
 
 
