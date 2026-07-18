@@ -77,7 +77,7 @@ rqt_image_view
 
 `rqt_image_view`화면에서 `/usb_cam/image_raw`토픽을 선택해 주면 다음과같이 Limo 로봇 카메라 영상을 실시간으로 확인할 수 있다.
 
-![](/home/gnd0/ros_with_limo/doc_md/img/rqt_image_view.png)
+![](./img/rqt_image_view.png)
 
 이제 원격지에서 실시간으로 로봇 시점에서 로봇을 조종할 수도 있고 ROS `cv_bridge` 패키지와 OpenCV 라이브러리를 이용해 영상처리를 이용한 로봇 제어를 구현할 수도 있다.
 
