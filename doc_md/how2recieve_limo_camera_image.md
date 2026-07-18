@@ -44,7 +44,32 @@ rosrun usb_cam usb_cam_node
 
 
 
-##### 2. PC에서 `rqt_image_view`  구동
+ ##### PC에서 Limo 로봇에서 구동한 `usb_cam_node`관련 토픽 확인
+
+```
+rostopic list
+```
+
+```
+rostopic list 
+/rosout
+/rosout_agg
+/usb_cam/camera_info
+/usb_cam/image_raw
+/usb_cam/image_raw/compressed
+/usb_cam/image_raw/compressed/parameter_descriptions
+/usb_cam/image_raw/compressed/parameter_updates
+/usb_cam/image_raw/compressedDepth
+/usb_cam/image_raw/compressedDepth/parameter_descriptions
+/usb_cam/image_raw/compressedDepth/parameter_updates
+/usb_cam/image_raw/theora
+/usb_cam/image_raw/theora/parameter_descriptions
+/usb_cam/image_raw/theora/parameter_updates
+```
+
+`/usb_cam/`으로 시작하는 토픽들 모두 LIMO 로봇에서 구동한 `usb_cam_node`관련 토픽들이다. 이 중 카메라 영상 이미지 토픽은 `/usb_cam/image_raw`토픽이다.
+
+#####  PC에서 `rqt_image_view`  구동
 
 ```
 rqt_image_view
