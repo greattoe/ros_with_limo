@@ -140,7 +140,7 @@ rostopic list
 
 Gazebo 시뮬레이션을 사용할 경우 `roscore` , `limo_bringup`패키지의 `limo_start.launch`를 구동하지 않아도 된다. 위 `rostopic list`명령 실행 결과를 보면, 이미 필요한 토픽들이 모두 시뮬레이션 된 것을 볼 수 있다.
 
-이제 앞서 작업한 `limo_pkg`의 `remote_limo.py`노드를 구동하여 시뮬레이션 된 limo로봇을 제어해보자.
+이제 [Limo로봇 키보드 원격제어 노드 작성](./teleop_key4limo.md) 실습에서 작성한 `limo_pkg`의 `remote_limo.py`노드를 구동하여 시뮬레이션 된 limo로봇을 제어해보자.
 
 ```
 rosrun limo_pkg remote_limo.py
